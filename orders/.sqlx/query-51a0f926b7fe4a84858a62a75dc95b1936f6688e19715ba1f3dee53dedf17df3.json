@@ -1,0 +1,19 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n        UPDATE orders\n        SET\n            stage = $2,\n            next_attempt_at = $3,\n            attempts = $4,\n            post_timeout_ms = $5,\n            last_error = $6,\n            updated_at = now()\n        WHERE id = $1\n        ",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Uuid",
+        "Text",
+        "Timestamptz",
+        "Int4",
+        "Int4",
+        "Text"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "51a0f926b7fe4a84858a62a75dc95b1936f6688e19715ba1f3dee53dedf17df3"
+}

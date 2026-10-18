@@ -1,0 +1,41 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n        WITH due AS (\n            SELECT event_id\n            FROM order_paid_outbox\n            WHERE published_at IS NULL AND next_attempt_at <= now()\n            ORDER BY next_attempt_at, created_at\n            LIMIT $1\n            FOR UPDATE SKIP LOCKED\n        )\n        UPDATE order_paid_outbox e\n        SET\n            next_attempt_at = $2,\n            updated_at = now()\n        FROM due\n        WHERE e.event_id = due.event_id\n        RETURNING e.event_id, e.order_id, e.occurred_at, e.attempts\n        ",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "event_id",
+        "type_info": "Uuid"
+      },
+      {
+        "ordinal": 1,
+        "name": "order_id",
+        "type_info": "Uuid"
+      },
+      {
+        "ordinal": 2,
+        "name": "occurred_at",
+        "type_info": "Timestamptz"
+      },
+      {
+        "ordinal": 3,
+        "name": "attempts",
+        "type_info": "Int4"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Int8",
+        "Timestamptz"
+      ]
+    },
+    "nullable": [
+      false,
+      false,
+      false,
+      false
+    ]
+  },
+  "hash": "15ded0e94f45338f87e78f2fdbac9453b8a616c975fa154e3ff2bd99e605ab7b"
+}

@@ -1,0 +1,15 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n        INSERT INTO order_paid_outbox (\n            event_id,\n            order_id\n        )\n        SELECT\n            $2,\n            id\n        FROM orders\n        WHERE id = $1 AND status = 'paid'\n        ON CONFLICT (order_id) DO NOTHING\n        ",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Uuid",
+        "Uuid"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "87426074e2852d0c68b5cbedf04e745e7100e2ba738c6676640b140cf950b0bc"
+}

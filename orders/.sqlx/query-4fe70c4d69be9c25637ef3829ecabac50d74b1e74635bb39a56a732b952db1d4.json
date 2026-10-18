@@ -1,0 +1,15 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n            INSERT INTO bonus_balances (\n                user_id,\n                points\n            )\n            VALUES (\n                $1,\n                $2\n            )\n            ON CONFLICT (user_id) DO UPDATE\n            SET\n                points = bonus_balances.points + EXCLUDED.points,\n                updated_at = now()\n            ",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Text",
+        "Int8"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "4fe70c4d69be9c25637ef3829ecabac50d74b1e74635bb39a56a732b952db1d4"
+}

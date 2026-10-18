@@ -1,0 +1,17 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n        UPDATE order_paid_outbox\n        SET\n            attempts = $2,\n            next_attempt_at = $3,\n            last_error = $4,\n            updated_at = now()\n        WHERE event_id = $1 AND published_at IS NULL\n        ",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Uuid",
+        "Int4",
+        "Timestamptz",
+        "Text"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "fa3a084b5cc83a0b3d37d4357a1d8eccb5223c552739864ab41006169b2c4b6a"
+}

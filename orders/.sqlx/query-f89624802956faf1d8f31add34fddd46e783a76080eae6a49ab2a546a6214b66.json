@@ -1,0 +1,59 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n        WITH due AS (\n            SELECT id\n            FROM orders\n            WHERE status = 'pending' AND next_attempt_at <= now()\n            ORDER BY (stage = 'verify') DESC, next_attempt_at\n            LIMIT $1\n            FOR UPDATE SKIP LOCKED\n        )\n        UPDATE orders o\n        SET\n            next_attempt_at = $2,\n            updated_at = now()\n        FROM due\n        WHERE o.id = due.id\n        RETURNING o.id, o.stage, o.amount_cents, o.currency,\n                  o.items as \"items: Json<Vec<Item>>\", o.attempts, o.post_timeout_ms\n        ",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "id",
+        "type_info": "Uuid"
+      },
+      {
+        "ordinal": 1,
+        "name": "stage",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 2,
+        "name": "amount_cents",
+        "type_info": "Int8"
+      },
+      {
+        "ordinal": 3,
+        "name": "currency",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 4,
+        "name": "items: Json<Vec<Item>>",
+        "type_info": "Jsonb"
+      },
+      {
+        "ordinal": 5,
+        "name": "attempts",
+        "type_info": "Int4"
+      },
+      {
+        "ordinal": 6,
+        "name": "post_timeout_ms",
+        "type_info": "Int4"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Int8",
+        "Timestamptz"
+      ]
+    },
+    "nullable": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+    ]
+  },
+  "hash": "f89624802956faf1d8f31add34fddd46e783a76080eae6a49ab2a546a6214b66"
+}
